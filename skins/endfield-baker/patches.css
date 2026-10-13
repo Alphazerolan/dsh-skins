@@ -456,7 +456,7 @@ button[role="tab"][aria-selected="true"] {
 /* 通用弹窗外框。⚠ 提问窗（Mbwy4a_card）不吃这一条：它是 role=dialog 的 section，
    皮肤这个 4px 圆角的描边和卡片本体的圆角对不上（用户反馈的「灰色描边错位」），
    而且用户明确说「提问窗的描边直接用 DeepSeek 预设的就行，留着青色提交键已经有皮肤味了」。 */
-[role="dialog"]:not([class*="Mbwy4a_card"]) {
+[role="dialog"]:not(:is([class*="Mbwy4a_card"], [class*="mAtvLq_card"])) {
   border: 1px solid var(--ef-line-strong);
   border-radius: 4px;
   box-shadow: var(--ef-shadow-3);
@@ -464,8 +464,8 @@ button[role="tab"][aria-selected="true"] {
 /* 提问窗：皮肤只动底色与提交键，描边/圆角/阴影全都交回应用。
    应用自己在卡片上挂了一条 0.5px 的浅色环（box-shadow）—— 半像素环在缩放屏上会糊成
    一条错位的灰边，用户两次都指着它说「没去干净」，所以这里连它一起去掉。 */
-[class*="Mbwy4a_card"],
-[class*="Mbwy4a_frame"] {
+:is([class*="Mbwy4a_card"], [class*="mAtvLq_card"]),
+:is([class*="Mbwy4a_frame"], [class*="mAtvLq_frame"]) {
   border: 0 !important;
   box-shadow: none !important;
   border-radius: var(--ef-radius);
@@ -485,30 +485,30 @@ button[role="tab"][aria-selected="true"] {
    按钮行 `Mbwy4a_footer`；按钮走通用类 `_button_cfgyt_*` + `_primary_cfgyt_*`（提交）/
    `_outline_cfgyt_*`（跳过本题）。 */
 /* 只改卡片底色：头部那条青色装饰是 Mbwy4a_header::before 画的，一并去掉 */
-[class*="Mbwy4a_card"],
-[class*="Mbwy4a_header"] {
+:is([class*="Mbwy4a_card"], [class*="mAtvLq_card"]),
+:is([class*="Mbwy4a_header"], [class*="mAtvLq_header"]) {
   background-image: none !important;
   background-color: #1b1d1c !important;
 }
 /* ⚠ 必须连卡片一起限定：聊天页顶栏的类名里也含 "header"，
    只写 [class*="header"]::before 会把顶栏那条双青条一起删掉（上一版就是这个 bug） */
-[class*="Mbwy4a_card"] [class*="Mbwy4a_header"]::before,
-[class*="Mbwy4a_card"] [class*="Mbwy4a_header"]::after {
+:is([class*="Mbwy4a_card"], [class*="mAtvLq_card"]) :is([class*="Mbwy4a_header"], [class*="mAtvLq_header"])::before,
+:is([class*="Mbwy4a_card"], [class*="mAtvLq_card"]) :is([class*="Mbwy4a_header"], [class*="mAtvLq_header"])::after {
   background-image: none !important;
 }
 /* 提交键 = 应用那套 _primary_ 按钮（旧配色是发暗的 #0E7D95），换亮青；
    「跳过本题」是 _outline_ 变体，显式恢复成描边样式（第一版把整排按钮都刷成青色了）。 */
-[class*="Mbwy4a_card"] button[class*="_primary_"] {
+:is([class*="Mbwy4a_card"], [class*="mAtvLq_card"]) button[class*="_primary_"] {
   background-image: none !important;
   background-color: var(--ef-cyan) !important;
   border-color: var(--ef-cyan) !important;
   color: #08171c !important;
   font-weight: 600;
 }
-[class*="Mbwy4a_card"] button[class*="_primary_"]:hover {
+:is([class*="Mbwy4a_card"], [class*="mAtvLq_card"]) button[class*="_primary_"]:hover {
   background-color: #3fdcff !important;
 }
-[class*="Mbwy4a_card"] button[class*="_outline_"] {
+:is([class*="Mbwy4a_card"], [class*="mAtvLq_card"]) button[class*="_outline_"] {
   background-image: none !important;
   background-color: transparent !important;
   border: 1px solid var(--ef-line-strong) !important;
@@ -518,7 +518,7 @@ button[role="tab"][aria-selected="true"] {
 /* 主按钮（模型页「保存」、其它确定键…）：应用的旧配色是发暗的蓝，统一换成亮信号青 */
 [class*="VOzbGW_panel"] button:is([class*="primary"], [class*="Primary"], [class*="submit"], [class*="Submit"]),
 [class*="VOzbGW_panel"] button[class*="_primary_"],
-[class*="Mbwy4a_card"] button[class*="_primary_"] {
+:is([class*="Mbwy4a_card"], [class*="mAtvLq_card"]) button[class*="_primary_"] {
   background-image: none !important;
   background-color: var(--ef-cyan) !important;
   border-color: var(--ef-cyan) !important;
@@ -2602,4 +2602,33 @@ body {
 [class*="vPH_UG_back"]:hover {
   background: rgb(var(--ef-cyan-rgb) / .12);
   color: var(--ef-cyan);
+}
+
+/* Fullscreen rightbar must fully cover the underlying workspace. */
+[data-sidebar-right-panel="fullscreen"][data-sidebar-right-open="true"] {
+  background-color: #131514 !important;
+  z-index: 100 !important;
+}
+[data-sidebar-right-panel="fullscreen"][data-sidebar-right-open="true"] > [class*="_panelBody"] {
+  background-color: #131514 !important;
+}
+
+/* Question takeover: keep its header plain, not conversation artwork. */
+:is([class*="Mbwy4a_card"], [class*="mAtvLq_card"]),
+:is([class*="Mbwy4a_card"], [class*="mAtvLq_card"]) header {
+  background: #060807 !important;
+}
+:is([class*="Mbwy4a_card"], [class*="mAtvLq_card"]) header::before,
+:is([class*="Mbwy4a_card"], [class*="mAtvLq_card"]) header::after {
+  content: none !important;
+  background: none !important;
+}
+
+/* One outer question card border, with a header/body separator. */
+:is([class*="Mbwy4a_card"], [class*="mAtvLq_card"]) {
+  border: 1px solid var(--ef-line-strong) !important;
+}
+:is([class*="Mbwy4a_card"], [class*="mAtvLq_card"]) > header {
+  border: 0 !important;
+  border-bottom: 1px solid var(--ef-line-strong) !important;
 }
