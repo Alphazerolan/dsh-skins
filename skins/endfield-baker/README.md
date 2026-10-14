@@ -10,7 +10,7 @@ installed on demand into `$DSH_HOME/skins/endfield-baker/` by the Workshop.
 
 - **Pure assets**: `skin.css` (L1: `--dsw-*` token remap plus the `--ef-*` primitives),
   `patches.css` (L3: structural patches for the chat shell and the plugin pages),
-  `assets/` (terminal artwork, signal bars, corner cuts), `preview/` (light/dark screenshots).
+  `assets/` (terminal artwork, signal bars, corner cuts), `preview/` (one store poster).
   No package.json, no build step, nothing executes.
 - **One palette**: every colour lives in the `:root` block of `skin.css`. Light and dark share
   the same terminal palette; changing a scheme means editing one block.
@@ -42,12 +42,16 @@ Applied locally through the skin center and checked in both skins-visible states
 
 ## Credits and license
 
-- Skin engineering by **Yuji6278**; the base theme is adapted from **blue-fantasy** (`powerdog996` / DreamSkin community). Base code remains subject to its original license.
-- All visual assets were obtained from https://chat.peilika.beer/ through page screenshots or browser developer tools, then cropped, adjusted or processed for this skin. The contributor cannot determine whether the site's assets were redrawn or extracted/adapted from game resources, and does not claim them as contributor-original or AI-generated assets.
-- The site's intellectual-property statement attributes *Arknights: Endfield*-related images and other game intellectual property to Shanghai Hypergryph Network Technology Co., Ltd. Other rights remain with their respective holders. This identifies the source and its stated ownership; it is not a redistribution authorization.
-- **CC BY-NC-SA 4.0** applies only to new contributions that the contributor has the right to license. It excludes third-party visual assets and does not override the base code's original license. The license text is in `LICENSE`.
-- This is an **unofficial fan work**, with no affiliation, partnership or endorsement from Hypergryph, the source website or this repository. It is intended **only for personal, non-commercial use**. The contributor assumes copyright and compliance responsibility for this contribution.
-- Permission to redistribute the third-party assets has **not been confirmed**. Neither this statement nor the non-commercial designation represents authorization or a guarantee of the right to redistribute.
+- Skin engineering by **Yuji6278** includes terminal-style layout, palette/token mapping, CSS composition, state adaptation and web/desktop compatibility work. The base theme is adapted from **blue-fantasy** (`powerdog996` / DreamSkin community); base code remains subject to its original license. This engineering work is distinct from the provenance and rights of individual images.
+- Sources and processing are classified in [NOTICE](NOTICE): site decorations from https://chat.peilika.beer/ were extracted and adjusted in brightness, transparency or orientation; the two SVG variants were extracted and recoloured, **not redrawn**. Chat/header artwork was cropped and adjusted from a contributor-provided reference screenshot. According to the contributor's confirmed account, `new-session.png` was cut out from a screenshot; the precise original image and crop coordinates remain unverified. `endfield-dark.jpg` was drawn by a geometric script without external image pixels, using BAKER-inspired colours. These categories do not make the whole asset set contributor-original or AI-generated.
+- The referenced work is ***Arknights: Endfield***. The source site's quoted intellectual-property statement attributes related images and game intellectual property to **Shanghai Hypergryph Network Technology Co., Ltd. (Hypergryph)**; other rights remain with their respective holders. The header contains anonymous human pictograms, not identifiable named game characters. The site's statement identifies stated ownership, not permission to redistribute.
+- The official international-site [Fan Content and Streaming Guidelines](https://endfield.gryphline.com/en-us/news/4497) provide the public policy basis for the intended personal, non-profit fan creation: eligible individuals/non-incorporated groups may create, display and distribute compliant fan works, generally without advance contact. The policy also requires respect for third-party rights, prohibits misleading official presentation and prohibits direct copying/extraction of official materials lacking clear creativity. The skin's engineering creativity does not by itself establish compliance for each extracted image; the policy's application to these site assets and packaged UI fragments remains uncertain. It is not file-by-file official authorization.
+- **CC BY-NC-SA 4.0** applies only to new contributions that the contributor has the right to license. It excludes third-party visual assets and does not override the base code's original license. The license text is in [LICENSE](LICENSE); source details, base-license facts and remaining gaps are in [NOTICE](NOTICE).
+- This is an **unofficial fan work**, with no affiliation, partnership or endorsement from Hypergryph, GRYPHLINE, the source website or this repository. It is intended **only for personal, non-commercial use**. The contributor assumes copyright and compliance responsibility for this contribution. The public policy and non-commercial designation are not a guarantee of the right to redistribute; third-party provenance and redistribution rights are not fully established.
+
+## Store preview
+
+`preview.light` and `preview.dark` both reference the single physical poster [preview/light.jpg](preview/light.jpg). The two scheme entries share one terminal palette; they are not two distinct preview images. The two independent light/dark verification evidence images remain separate and are not replaced by this store poster.
 
 ## Known limitations
 
