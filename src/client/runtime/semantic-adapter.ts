@@ -12,6 +12,9 @@
  *
  * Properties:
  *  - merged: a single observer handles every rule;
+ *  - batched: one delivery collects its records before any rule runs, so a
+ *    session switch that mounts thousands of nodes does not re-walk and
+ *    re-match the same ancestors once per node (issue #1870);
  *  - idempotent: re-tagging an already-correct element is a no-op, so React
  *    re-renders simply get re-stamped when their nodes are re-added;
  *  - fail-closed diagnostics: rules that match nothing and selectors the
@@ -142,6 +145,51 @@ const ANCHOR_ATTRIBUTES: readonly string[] = [
 // traffic on the page. The filter stays on identity anchors.
 
 /**
+ * Selector shapes whose verdict depends on the element's DESCENDANTS or on
+ * its position among its siblings, rather than on the element alone.
+ *
+ * Everything outside this list is "self-only": inserting a descendant cannot
+ * change whether the element itself matches. Splitting the table on that
+ * boundary is what keeps the ancestor walk cheap without weakening what the
+ * walk is FOR (issue #1732) — re-anchoring an ANCESTOR when a late descendant
+ * turns out to be the anchor that ancestor keys on.
+ */
+const DESCENDANT_SENSITIVE_PSEUDO = /:has\(|:empty|:first-child|:last-child|:only-child|:first-of-type|:last-of-type|:only-of-type|:nth-/
+
+/**
+ * Attribute names a selector references. Deliberately a plain scan of the
+ * bracket contents rather than a parsed selector: it also finds a reference
+ * nested INSIDE a functional pseudo-class, which is what lets
+ * `[role="dialog"]:has([data-slot="settings.section"])` answer to a late
+ * data-slot flip on an element inside the dialog.
+ */
+const SELECTOR_ATTRIBUTE = /\[([A-Za-z0-9_-]+)/g
+
+const attributeReferences = (selector: string): ReadonlySet<string> => {
+  const names = new Set<string>()
+  for (const found of selector.matchAll(SELECTOR_ATTRIBUTE)) names.add(found[1])
+  return names
+}
+
+interface RuleTraits {
+  /** True when a descendant or sibling change can flip this rule's verdict. */
+  readonly descendantSensitive: boolean
+  /** Every attribute the selector names, functional pseudo-classes included. */
+  readonly attributes: ReadonlySet<string>
+}
+
+/**
+ * Rule traits derived from the selector text ONCE, at module load, never per
+ * element. The classification is what every batching decision below reads;
+ * re-deriving it inside the walk would reintroduce exactly the per-node work
+ * this change removes (issue #1870).
+ */
+const RULE_TRAITS: readonly RuleTraits[] = SEMANTIC_RULES_V1.map((rule) => ({
+  descendantSensitive: DESCENDANT_SENSITIVE_PSEUDO.test(rule.selector),
+  attributes: attributeReferences(rule.selector),
+}))
+
+/**
  * Safety bound of the ancestor walk, NOT a depth ceiling.
  *
  * The walk's normal terminator is the observed root: every node the observer
@@ -156,6 +204,13 @@ const ANCHOR_ATTRIBUTES: readonly string[] = [
  * a deeper row unanchored — which is the very defect this walk exists to fix
  * (issue #1732). A measured sweep anchors through 23 wrapper levels and misses
  * from 24, i.e. only past the point where the tree is pathological.
+ *
+ * Narrowing WHICH rules a hop applies does not make the hop count safe to drop
+ * (issue #1870): a childList record only ever flips a descendant-sensitive
+ * rule, and an attributes record only the rules naming the attribute that
+ * actually changed, so a hop now costs one matches() call per APPLICABLE rule
+ * instead of one per rule in the table. The bound stays as the backstop it has
+ * always been.
  */
 const ANCESTOR_HOPS = 24
 
@@ -175,7 +230,7 @@ export interface SemanticAdapter {
   readonly running: boolean
 }
 
-interface LiveRule {
+interface LiveRule extends RuleTraits {
   rule: SemanticRule
   /** False once the engine rejected the selector. */
   usable: boolean
@@ -184,7 +239,21 @@ interface LiveRule {
 }
 
 export function createSemanticAdapter(doc: Document): SemanticAdapter {
-  const rules: LiveRule[] = SEMANTIC_RULES_V1.map((rule) => ({ rule, usable: true, matchedInPass: 0 }))
+  const rules: LiveRule[] = SEMANTIC_RULES_V1.map((rule, index) => ({
+    rule,
+    usable: true,
+    matchedInPass: 0,
+    descendantSensitive: RULE_TRAITS[index].descendantSensitive,
+    attributes: RULE_TRAITS[index].attributes,
+  }))
+  /**
+   * The subset a childList delivery may walk: inserting a descendant can flip
+   * a descendant-sensitive rule on an ancestor and nothing else. A self-only
+   * ancestor was already rule-checked when it was added (or by fullPass), and
+   * its verdict cannot change because something inside it grew, so
+   * re-evaluating it is the cost, not the correctness, of the walk.
+   */
+  const descendantSensitiveRules: readonly LiveRule[] = rules.filter((live) => live.descendantSensitive)
   let observer: MutationObserver | null = null
   let stamped = 0
   let running = false
@@ -229,20 +298,26 @@ export function createSemanticAdapter(doc: Document): SemanticAdapter {
   }
 
   /**
-   * Re-anchor one changed node and its ancestor chain.
+   * Re-anchor one changed node's ancestor chain with the rules that change
+   * could actually have flipped.
    *
    * applyToTree only walks DOWNWARD: a rule whose selector matches an ancestor
    * of the changed node (the panel-list row is recognised by the glyph INSIDE
    * it) is never re-evaluated when that descendant arrives. React mounts the
    * row first and the registering plugin's glyph a tick later, so without this
    * the row keeps no anchor at all until something forces a full pass
-   * (issue #1732). The walk is bounded and stops at the document root.
+   * (issue #1732). The walk is bounded, stops at the document root, and
+   * carries only the rules the reported change can flip: the caller's batch has
+   * already deduplicated the hops it shares with sibling records, so a hop
+   * costs one matches() call per applicable rule, not one per rule in the table
+   * (issue #1870).
    */
-  const reanchorAround = (node: Element): void => {
+  const reanchorAncestors = (node: Element, subset: readonly LiveRule[]): void => {
+    if (subset.length === 0) return
     const root = doc.body ?? doc.documentElement
     let current: Element | null = node
     for (let hop = 0; current !== null && hop <= ANCESTOR_HOPS; hop += 1) {
-      for (const live of rules) {
+      for (const live of subset) {
         if (live.usable) applyRule(live, current)
       }
       // Stop at the observed root: going further cannot reach a node the
@@ -250,6 +325,32 @@ export function createSemanticAdapter(doc: Document): SemanticAdapter {
       if (current === root || current === doc.documentElement) return
       current = current.parentElement
     }
+  }
+
+  /**
+   * Drop added roots that another root of the same delivery already contains:
+   * applyToTree on the containing root scans the nested one as part of its own
+   * subtree, and the containing root's own ancestor walk covers the nested
+   * root's ancestors, so re-scanning it is pure duplicate work. Membership is a
+   * Set probe per ancestor hop — no selector-engine call — which keeps a
+   * delivery that mounts a whole subtree at once linear in that subtree.
+   */
+  const topmostRoots = (roots: ReadonlySet<Element>): Element[] => {
+    const kept: Element[] = []
+    for (const candidate of roots) {
+      let parent = candidate.parentElement
+      let nested = false
+      while (parent !== null) {
+        if (roots.has(parent)) {
+          nested = true
+          break
+        }
+        if (parent === doc.documentElement) break
+        parent = parent.parentElement
+      }
+      if (!nested) kept.push(candidate)
+    }
+    return kept
   }
 
   return {
@@ -263,20 +364,61 @@ export function createSemanticAdapter(doc: Document): SemanticAdapter {
       fullPass()
       observer = new doc.defaultView!.MutationObserver((records) => {
         try {
+          // The delivery is collected BEFORE any rule runs. Records of one
+          // batch share ancestors and even targets, and re-walking them once
+          // per record is what turned a session switch into tens of thousands
+          // of matches() calls (issue #1870).
+          const roots = new Set<Element>()
+          const byAttribute = new Map<string, Set<Element>>()
           for (const record of records) {
+            if (record.type === 'attributes') {
+              // Only a rule that NAMES the attribute can flip because of it.
+              // No rule in the table names the attributes the adapter itself
+              // stamps, so every stamp it writes is an echo that now costs
+              // zero rule evaluations instead of a full ancestor walk.
+              const target = record.target.nodeType === 1 ? record.target as Element : null
+              const name = record.attributeName
+              if (target === null || name === null) continue
+              const seen = byAttribute.get(name)
+              if (seen === undefined) byAttribute.set(name, new Set([target]))
+              else seen.add(target)
+              continue
+            }
+            if (record.type !== 'childList') continue
             for (const node of Array.from(record.addedNodes)) {
               if (node.nodeType !== 1) continue
-              const el = node as Element
-              applyToTree(el)
-              // The added subtree may itself be the glyph a row wants; the row
-              // is an ANCESTOR of it and applyToTree never looks up (#1732).
-              reanchorAround(el.parentElement ?? el)
+              roots.add(node as Element)
             }
-            // A glyph whose ANCHOR is set on an element already in the tree
-            // (a re-render that flips the attribute instead of replacing the
-            // node) is the same signal, and childList alone never sees it.
-            const target = record.target.nodeType === 1 ? record.target as Element : null
-            if (target !== null && record.type === 'attributes') reanchorAround(target)
+          }
+
+          // An added root keeps the full treatment, unchanged: every rule on
+          // the root itself and on its whole subtree. Only the walk ABOVE it
+          // is narrowed.
+          for (const root of topmostRoots(roots)) {
+            applyToTree(root)
+            // The added subtree may itself be the glyph a row wants; the row
+            // is an ANCESTOR of it and applyToTree never looks up (#1732).
+            reanchorAncestors(root.parentElement ?? root, descendantSensitiveRules)
+          }
+
+          // A glyph whose ANCHOR is set on an element already in the tree (a
+          // re-render that flips the attribute instead of replacing the node)
+          // is the same signal, and childList alone never sees it.
+          for (const [name, targets] of byAttribute) {
+            const onTarget: LiveRule[] = []
+            const onAncestors: LiveRule[] = []
+            for (const live of rules) {
+              if (!live.attributes.has(name)) continue
+              onTarget.push(live)
+              // An ancestor's verdict can only change when the rule reads
+              // through the descendant that just changed its attribute.
+              if (live.descendantSensitive) onAncestors.push(live)
+            }
+            if (onTarget.length === 0) continue
+            for (const target of targets) {
+              for (const live of onTarget) applyRule(live, target)
+              reanchorAncestors(target.parentElement ?? target, onAncestors)
+            }
           }
         } catch {
           // Fail-closed: a tagging error must never break the host page.
