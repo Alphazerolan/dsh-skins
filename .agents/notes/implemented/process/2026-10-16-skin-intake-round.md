@@ -69,3 +69,39 @@ is open rather than merged. #66's acceptance sets the precedent that a cited
 fan-content policy plus an explicit responsibility statement satisfies the
 provenance gate, which is weaker than per-file authorization and should be
 revisited if a rights holder objects.
+
+
+## Second pass, 2026-10-16 (maintenance round, read-only)
+
+No skin action was taken this round. Both open skin pull requests were read-only
+checks and neither produced a decision to execute.
+
+**#68 (model-dorm floating-surface tokens)** still awaits its author. The
+maintainer review requesting changes is timestamped after its last commit, so
+there is nothing new to review.
+
+**#64 (windows-xp)** was withdrawn by its own author at `2026-10-16T13:17:53Z`
+with `mergedAt` null. The open review request the maintainer had left on it is
+therefore moot; it is recorded here so a later round does not read the closed
+state as a merge.
+
+## Decision
+
+Leave both alone. Re-reviewing a pull request whose author has not pushed since
+the review is how a thread fills with duplicate requests, and the withdrawal is
+the author's signal to give, not the maintainer's to interpret.
+
+## Alternatives considered
+
+**Close #68 as stale.** It was reviewed hours earlier, which is not staleness; the
+stale-assignment policy measures maintainer response, and the maintainer has
+responded.
+
+**Re-comment on #68 with the same findings in shorter form.** It carries no new
+information and would only re-notify the author.
+
+## Consequences
+
+The skin catalog is unchanged and no pin moved for this repository this round.
+Reading a withdrawn pull request as merged would be the real failure mode here, so
+the withdrawal is recorded explicitly rather than inferred from the closed state.
