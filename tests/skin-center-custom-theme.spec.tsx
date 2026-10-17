@@ -21,7 +21,7 @@ function customScope(
   let value = { ...initial } as CustomThemeConfig
   const listeners = new Set<() => void>()
   const snapshot: ConfigFormSnapshot<CustomThemeConfig> = {
-    status: 'ready', value, base: undefined, user: undefined, revision: 1, writable: true, mode: 'host',
+    status: 'ready', value, base: undefined, user: undefined, revision: 1, writable: true,
   }
   return {
     getSnapshot: () => ({ ...snapshot, value }),

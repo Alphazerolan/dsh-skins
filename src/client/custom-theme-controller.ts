@@ -210,7 +210,7 @@ export class CustomThemeController {
   private sectionState(): string {
     const snapshot = this.scope.getSnapshot()
     const revision = snapshot.revision === undefined ? 'none' : String(snapshot.revision)
-    return `${SKIN_CUSTOM_THEME_NS}: status ${snapshot.status}, writable ${String(snapshot.writable)}, mode ${snapshot.mode}, revision ${revision}`
+    return `${SKIN_CUSTOM_THEME_NS}: status ${snapshot.status}, writable ${String(snapshot.writable)}, revision ${revision}`
   }
 
   private queueWrite<K extends CustomThemeField>(field: K, value: CustomThemeConfig[K]): Promise<void> {

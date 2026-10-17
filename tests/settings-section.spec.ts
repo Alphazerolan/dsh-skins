@@ -30,7 +30,6 @@ function fakeForm(overrides: Partial<ConfigFormSnapshot<unknown>> = {}): {
     user: { 'skin-wallpaper': { selection: '111' } },
     revision: 7,
     writable: true,
-    mode: 'host',
     ...overrides,
   }
   let accepted = true
@@ -76,7 +75,6 @@ describe('settingsSection', () => {
       user: { selection: '111' },
       revision: 7,
       writable: true,
-      mode: 'host',
     })
   })
 
@@ -197,7 +195,6 @@ describe('settingsSection', () => {
         user: undefined,
         revision: undefined,
         writable: false,
-        mode: 'host',
       })
   })
 })

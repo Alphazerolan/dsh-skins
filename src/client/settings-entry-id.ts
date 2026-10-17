@@ -85,7 +85,6 @@ function unavailableSnapshot<T>(): ConfigFormSnapshot<T> {
     user: undefined,
     revision: undefined,
     writable: false,
-    mode: 'host',
   }
 }
 

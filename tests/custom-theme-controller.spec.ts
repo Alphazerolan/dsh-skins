@@ -26,7 +26,6 @@ function fakeScope(initial: Partial<CustomThemeConfig> = {}, policy: WritePolicy
     user: undefined,
     revision: 1,
     writable: true,
-    mode: 'host',
   }
   const answer = (): WriteAnswer => typeof policy === 'function' ? policy() : policy
   const scope: ConfigForm<CustomThemeConfig> = {
@@ -74,7 +73,6 @@ function delayedScope(initial: Partial<CustomThemeConfig> = {}): {
     user: undefined,
     revision: 1,
     writable: true,
-    mode: 'host',
   }
   const scope: ConfigForm<CustomThemeConfig> = {
     getSnapshot: () => ({ ...snapshot, value }),
@@ -115,7 +113,6 @@ function restoringScope(initial: Partial<CustomThemeConfig>): ConfigForm<CustomT
     user: undefined,
     revision: 1,
     writable: true,
-    mode: 'host',
   }
   return {
     getSnapshot: () => ({ ...snapshot, value }),

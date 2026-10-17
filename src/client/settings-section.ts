@@ -49,7 +49,6 @@ export function settingsSection<T>(parent: ConfigForm<unknown>, key: string): Co
       user: layerOf(snapshot.user, key),
       revision: snapshot.revision,
       writable: snapshot.writable,
-      mode: snapshot.mode,
     }
     return projected
   }

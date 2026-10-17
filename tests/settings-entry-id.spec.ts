@@ -53,7 +53,6 @@ function fakeForms(initialServed: readonly string[] | null) {
       user: undefined,
       revision: 1,
       writable: true,
-      mode: 'host' as const,
     }),
     subscribe: (listener: () => void) => {
       if (!formListeners.has(entryId)) formListeners.set(entryId, new Set())
@@ -219,7 +218,7 @@ describe('the skin center binds the entry row the Host actually serves', () => {
     const throwingForms = {
       describe: () => { throw new Error('mirror unavailable') },
       get: (id: string) => ({
-        getSnapshot: () => ({ status: 'ready', value: { id }, base: undefined, user: undefined, revision: 1, writable: true, mode: 'host' }),
+        getSnapshot: () => ({ status: 'ready', value: { id }, base: undefined, user: undefined, revision: 1, writable: true }),
         subscribe: () => () => {},
         set: async () => true,
         unset: async () => true,
