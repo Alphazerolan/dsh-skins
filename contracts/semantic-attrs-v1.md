@@ -71,7 +71,7 @@
 皮肤中心不写委托插件的任何属性，委托插件不写 `data-dsh-skin`，双方都无法把
 对方卡死。委托皮肤的选择会照常持久化、开机采纳与试穿还原；让路暂停的是
 视觉，不是插件的设置页与偏好。
-## part 组（81 行，含各 owner 行）
+## part 组（78 行，含各 owner 行）
 
 shell 区域（owner: shell）：
 
@@ -154,14 +154,6 @@ family / 插件区域：
 | `foot-card-main` / `foot-card-toggle` | usage | 速览卡主体按钮（整卡点击打开设置分区）/ 右上角收起-展开切换钮；foot-card 内裸值 button |
 | `foot-card-strip` | usage | 折叠态单行摘要条（标签 + 头条值）；折叠时 foot-card-main 内裸值 span |
 | `foot-card-usage` / `foot-card-balances` | usage | 展开态的 tokens/调用行 / 余额行；foot-card 内裸值 span |
-| `panel` | model-capabilities | 提供方卡片能力扩展区根；`[data-dsh-plugin="model-capabilities"][data-dsh-part="panel"]` |
-| `toggle` | model-capabilities | 扩展区折叠头按钮；panel 内 `button[data-dsh-part="toggle"]` |
-| `model-row` / `model-toggle` | model-capabilities | 逐模型能力行与其展开按钮；panel 内 `li[data-dsh-part="model-row"]` 及其中 `button[data-dsh-part="model-toggle"]` |
-| `image-input` / `efforts-mode` | model-capabilities | 图片输入勾选组 / 推理档位三态组；展开行内字段容器 `[data-dsh-part="image-input"]`、`[data-dsh-part="efforts-mode"]` |
-| `wire-input` | model-capabilities | 档位发送值输入行；`[data-dsh-part="wire-input"]` 内含 `input[type="text"]` |
-| `save` / `reset` / `disable` / `enable` / `reload` | model-capabilities | 扩展区动作按钮（保存 / 重置 / 禁用此提供方 / 启用 / 重新读取）；panel 内裸值按钮 |
-| `disabled-state` | model-capabilities | 已禁用提供方的卡片提示区（含启用按钮）；panel 内 `[data-dsh-part="disabled-state"]` |
-| `disabled-footer` / `disabled-row` | model-capabilities | Models 页底部存档区与其行；`settings.models.footer` 槽内 `section[data-dsh-part="disabled-footer"]` 与其中 `li[data-dsh-part="disabled-row"]` |
 | `lever` | liangshen | 首页输入框内的梁神模式拨杆根（模型选择器左侧）；`[data-dsh-plugin="liangshen"][data-dsh-part="lever"]`，状态由 `data-state`（`on` / `off` / `locked` / `missing`）锚定 |
 | `lever-track` | liangshen | 拨杆底座槽（臂的转动轨道）；lever 内 `[data-dsh-part="lever-track"]` |
 | `lever-arm` | liangshen | 拨杆臂（拉杆 + 球头，随状态转动）；lever 内 `[data-dsh-part="lever-arm"]` |
@@ -199,7 +191,6 @@ shell 的 `[class*="panelGlyph"]` 内）。shell 目前不把 entry id 透传到
 | `skin-center` | skins/skin-center | 一级设置分区 settings.section id `skin-center`（列已安装皮肤，属内置源时显式标记） |
 | `session-id` | dsh-session-id | footer action slot entry id `session-id`；`[data-dsh-plugin="session-id"]`（面板 overlay 根 + 入口触发器） |
 | `usage` | dsh-usage | 一级设置分区 settings.section id `dsh-usage`（创意工坊下方）；`[data-dsh-plugin="usage"]`；侧栏底部速览卡容器 `[data-dsh-usage-foot-card]` |
-| `model-capabilities` | dsh-model-capabilities | Models 页 `settings.models.provider-card` keyed 槽 key `llm-pi-ai`（提供方卡片扩展区）+ `settings.models.footer` 槽 entry id `ui-model-capabilities`（存档区）；`[data-dsh-plugin="model-capabilities"]` |
 | `preset-center` | dsh-preset-center | 创意工坊卡片的「预设」标签页面板（`dsh-workshop.panel` keyed 槽 key `preset`）；`[data-dsh-plugin="preset-center"]` |
 | `liangshen` | dsh-liangshen | 首页输入框内的梁神模式拨杆；`[data-dsh-plugin="liangshen"][data-dsh-part="lever"]`，slot entry id `liangshen-lever` |
 
