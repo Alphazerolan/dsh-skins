@@ -105,12 +105,24 @@ pins; this change does not touch it.
   relying on a CSS-modules hash name, as it is for maid-atelier and cyber-night.
   That warning is a note, not a failure; the declaration is the accepted form
   for this shell, and the spec pins it.
-- Any other skin that writes `--dsw-specific-sidebar-fill` as an
-  occlusion-tracking `rgba()` carries the same latent whole-window blank on the
-  Windows desktop. white-snake is the one other skin in this catalog that does
-  (`calc(1 - var(--dsw-skin-scrim, 0) * 0.35)`, light and dark, 0.65 alpha at
-  scrim 0); it is not fixed here because it was not reported and its 0.65 alpha
-  may well be survivable, but it is the next candidate if that report arrives.
+- Any other skin that writes `--dsw-specific-sidebar-fill` at an alpha high
+  enough to hide the illustration carries the same latent whole-window blank on
+  the Windows desktop. `furina` was the first such report after this one
+  ([#78](https://github.com/zhu1090093659/dsh-skins/issues/78)): it writes a fixed
+  `#f2f5fae6` / `#1d2539e6` (alpha .902), so the scrim slider cannot rescue it
+  at all, and it now ships the identical rule
+  (`skins/furina/patches.css`, `tests/furina-frame.spec.ts`). white-snake is the
+  next candidate with the same shape (`calc(1 - var(--dsw-skin-scrim, 0) *
+  0.35)`, light and dark, 0.65 alpha at scrim 0); it is not fixed because it was
+  not reported and its 0.65 alpha may well be survivable.
+- The trigger is common, not exotic. Measured over this repository's catalog (61
+  skins, alpha evaluated at scrim 0): 58 define the token, 48 of those at alpha
+  >= 0.5, and 25 of the 48 still carry no frame rule. Patching skin by skin keeps
+  missing cases; folding the declaration into the skin center's shell-rendering
+  adapter is the systemic fix. It is deliberately **not** done here -- the
+  accepted form for a skin that needs it today is the per-skin rule this note
+  owns, and a shared injection would change what every installed skin paints on
+  the desktop at once, which is a separate decision with its own note.
 
 ## Testing
 
@@ -130,3 +142,9 @@ pins; this change does not touch it.
 - `pnpm test`, `pnpm typecheck`, `pnpm skin-center:check` and
   `pnpm skin-hooks:check` pass; the market build in dsh-web is regenerated from
   the new gitlink and verified with `pnpm market:check`.
+- `furina` repeats the same shape in `tests/furina-frame.spec.ts`: the
+  declaration, the selector, the token it must not neutralize, the scoped
+  selector, the cascade under a Windows-shell fixture, and one extra assertion
+  this note's section argues for -- that the rule clears paint only, because the
+  frame's box belongs to the host. Deleting the rule fails 6 of its 9
+  assertions.
