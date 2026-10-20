@@ -12,7 +12,7 @@ Two submissions were open: a new skin (#74, whale-senren) and a token fix for an
 
 **#68 stays on changes requested.** The earlier review asked for a close-up of a floating surface, and the head has not moved since 2026-10-13; the two evidence images added in the change are byte-identical to the pre-change images and to the skin's own previews, so the pixel-difference argument stays unproven. The token-name and scope answers were verified instead of taken on trust: the three wrong token names occur zero times in the head, and the installed `dsh-client-ui-theme` 0.2.1-rc.2 declares `--dsw-*` on `body,body *` in exactly one of its two matching rules, the elevation family.
 
-**The light-only question was raised, not decided.** This is the first skin in the catalog tagged light-only: the market shows the same preview for both modes and a dark-mode user receives a light interface. The author was asked to state the intent in the skin README, and the product decision stays with the maintainer.
+**The light-only question was raised here and decided in [the 2026-10-20 round](2026-10-20-skin-intake-round.md).** This is the first skin in the catalog tagged light-only: the market shows the same preview for both modes and a dark-mode user receives a light interface. The author states the intent in the skin README, and the single-theme choice is accepted there as a written exception.
 
 ## Alternatives considered
 
