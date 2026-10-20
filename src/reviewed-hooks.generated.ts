@@ -29,6 +29,11 @@ export const REVIEWED_SKIN_HOOKS: Readonly<Record<string, ReviewedSkinHooksIdent
     manifestSha256: "38de22962a80602c22910324e7c5fec171342363760972b7421debeb628d8508",
     hooksSha256: "199f37fe6969e3dfae4891708604b6b639f011068c10356f774145512fd3be69",
   },
+  "diy-journal": {
+    entry: "hooks.mjs",
+    manifestSha256: "3bb6ed40ad441fd0286fb8040ba4d8697f5c4a30a099ec4cbef8ba1aaddd68f1",
+    hooksSha256: "6a286d2191b2ffdf2bdec7f92ffb9896cd9dfd12055160118fc120dc8efa9572",
+  },
   "dragon-heir": {
     entry: "hooks.mjs",
     manifestSha256: "e963197ef3d7b0b444c5976b4dd42cb9e30ce79880bfcb4a076da3426ff60056",
