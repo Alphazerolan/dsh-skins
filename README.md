@@ -45,14 +45,14 @@ The three most-liked skins in the Workshop's skin category on [dsh-market.com](h
 | Skin | Author | Look |
 |---|---|---|
 | [Abyssal Maid Atelier](https://dsh-market.com/#skin:maid-atelier) (`maid-atelier`) | Small-tailqwq | Twin-maid atelier backdrop, deep-sea blue lace surfaces and a chibi sidebar |
+| [Whale Girl · The Unreached](https://dsh-market.com/#skin:whale-fantasy) (`whale-fantasy`) | stushansusu | Cyber data-rain close-up backdrop, cold-navy holographic HUD and electric-cyan accents |
 | [Whale Song](https://dsh-market.com/#skin:whale-song) (`whale-song`) | dsh-web | Deep-sea whale goddess backdrop, ice-blue ocean palette and gold hairlines |
-| [Blue Fantasy](https://dsh-market.com/#skin:blue-fantasy) (`blue-fantasy`) | powerdog996 (DreamSkin community), adapted by dsh-web | Whale-illustration backdrop, periwinkle indigo palette and translucent panels |
 
-| Abyssal Maid Atelier | Whale Song | Blue Fantasy |
+| Abyssal Maid Atelier | Whale Girl · The Unreached | Whale Song |
 |---|---|---|
-| ![Abyssal Maid Atelier](skins/maid-atelier/preview/light.jpg) | ![Whale Song](skins/whale-song/preview/light.jpg) | ![Blue Fantasy](skins/blue-fantasy/preview/light.jpg) |
+| ![Abyssal Maid Atelier](skins/maid-atelier/preview/light.jpg) | ![Whale Girl · The Unreached](skins/whale-fantasy/preview/light.jpg) | ![Whale Song](skins/whale-song/preview/light.jpg) |
 
-Install any of them from the Workshop in one click; `blue-fantasy` is also the skin this package ships as its built-in default.
+Install any of them from the Workshop in one click.
 
 ## Install
 
