@@ -120,6 +120,7 @@ dsh plugin --profile web add dsh-plugin-wallpaper-engine
   设置页照常可用。
 
 皮肤中心只读插件的标记、从不写入，插件也从不写 `data-dsh-skin`，两边都无法把对方卡死。
+
 ## 配置
 
 - **总开关**：开关整张卡片（试穿 / 应用 / 背景控制）；持久化在 v2 活跃状态文档中。

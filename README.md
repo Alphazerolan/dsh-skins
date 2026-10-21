@@ -126,7 +126,9 @@ the selection.
   uninstall: the plugin keeps its own settings page while another skin is on screen.
 
 The skin center reads the plugin's markers and never writes them, and the plugin never writes
-`data-dsh-skin`. Neither side can strand the other.## Configuration
+`data-dsh-skin`. Neither side can strand the other.
+
+## Configuration
 
 - **Enable switch**: turns the whole card (try-on / apply / background controls) on or off; persisted in the v2 active-state document.
 - **Background sliders**: occlusion (0–100%), two backdrop blur radii, input-card blur (0–20 px), and bubble opacity (0–100%); persisted in the same v2 document.
