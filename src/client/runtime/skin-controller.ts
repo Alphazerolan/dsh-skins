@@ -44,6 +44,8 @@ import { setSceneBackdropActive } from './backdrop-scene.ts'
 export interface DelegatedSkinPayload {
   /** npm package spec the card installs through the plugin manager. */
   package: string
+  /** Exact-selection protocol; ordinary stamp also makes legacy peers yield. */
+  selectionMode?: 'explicit'
   /** Upstream repository (docs, issues, changelog). */
   repository: string
   /** The attribute the delegated plugin stamps on body while it owns the page. */
@@ -519,8 +521,12 @@ export function createSkinController(deps: SkinControllerDeps): SkinController {
       // withheld skin leaves the stamp off, which is what actually removes the
       // skin's CSS from the page. A delegated skin leaves it off for the same
       // reason from the other side: its owner reads the stamp.
-      if (id === null || withheld || delegated) doc.documentElement.removeAttribute('data-dsh-skin')
+      const explicit = delegated && entry?.manifest.delegated?.selectionMode === 'explicit'
+      if (id === null || withheld || (delegated && !explicit)) doc.documentElement.removeAttribute('data-dsh-skin')
       else doc.documentElement.setAttribute('data-dsh-skin', id)
+      // This is the displayed selection, including try-on, never just persisted state.
+      if (delegated && !withheld && id !== null) doc.documentElement.setAttribute('data-dsh-delegated-skin', id)
+      else doc.documentElement.removeAttribute('data-dsh-delegated-skin')
       const previous = currentActivation
       currentActivation = activation
       active = id
@@ -569,6 +575,7 @@ export function createSkinController(deps: SkinControllerDeps): SkinController {
         stoodDown = false
         committed = { id: null, entry: null }
         doc.documentElement.removeAttribute('data-dsh-skin')
+        doc.documentElement.removeAttribute('data-dsh-delegated-skin')
         emit()
       }
       onError(`switch to ${id ?? 'stock'} failed; previous skin intact`, error)
@@ -716,6 +723,7 @@ export function createSkinController(deps: SkinControllerDeps): SkinController {
       committed = { id: null, entry: null }
       emit()
       doc.documentElement.removeAttribute('data-dsh-skin')
+      doc.documentElement.removeAttribute('data-dsh-delegated-skin')
     },
   }
 }

@@ -16,6 +16,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 import {
   CLAUDE_STYLE_SKIN,
+  DIY_JOURNAL_SKIN,
   DELEGATED_SKINS,
   delegatedSkinRows,
   findDelegatedSkin,
@@ -61,10 +62,10 @@ beforeEach(() => { root = mkdtempSync(join(tmpdir(), 'dsh-delegated-rows-')) })
 afterEach(() => { rmSync(root, { recursive: true, force: true }) })
 
 describe('the delegated-skin registry', () => {
-  it('names the Claude style plugin and nothing else', () => {
+  it('registers both independent plugin themes', () => {
     // Given / When the registry is read
     // Then it is exactly one descriptor, and it is the peer's own published shape
-    expect(DELEGATED_SKINS).toHaveLength(1)
+    expect(DELEGATED_SKINS).toHaveLength(2)
     expect(CLAUDE_STYLE_SKIN.id).toBe('claude-style')
     expect(CLAUDE_STYLE_SKIN.package).toBe('dsh-claude-style')
     expect(CLAUDE_STYLE_SKIN.wiringId).toBe('ui-skin-claude-style')
@@ -89,7 +90,7 @@ describe('the delegated-skin rows', () => {
     const rows = delegatedSkinRows({ home })
 
     // Then the row is there, uninstalled, with nothing compared
-    expect(rows).toHaveLength(1)
+    expect(rows).toHaveLength(2)
     expect(rows[0].installed).toBe(false)
     expect(rows[0].signals).toEqual([])
     expect(rows[0].descriptorMatches).toBeNull()
@@ -205,4 +206,16 @@ describe('the shared profile probe', () => {
       .toBe('claude-style')
     expect(readInstalledDescriptor(join(home, '.dsh', 'profiles', 'other'), 'dsh-claude-style')).toBeNull()
   })
+})
+
+it('probes DIY by package identity while installing from GitHub', () => {
+  const home = makeHome({ web: { dependencies: { [DIY_JOURNAL_SKIN.package]: DIY_JOURNAL_SKIN.installSpec! } } })
+  const dir = installedPackageDir(join(home, '.dsh', 'profiles', 'web'), DIY_JOURNAL_SKIN.package)
+  mkdirSync(dir, { recursive: true })
+  writeFileSync(join(dir, 'skin.json'), JSON.stringify({ ...DIY_JOURNAL_SKIN, wiring: { id: DIY_JOURNAL_SKIN.wiringId } }))
+  const row = delegatedSkinRows({ home }).find(row => row.descriptor.id === 'diy-journal-plugin')!
+  expect(row.installed).toBe(true)
+  expect(row.descriptorMatches).toBe(true)
+  expect(row.descriptor.selectionMode).toBe('explicit')
+  expect(row.descriptor.installSpec).toMatch(/^github:Alphazerolan\/diy-journal-settings/)
 })

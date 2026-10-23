@@ -110,10 +110,11 @@ const NPM_SPEC = /^(?:@[a-z0-9][a-z0-9._-]*\/)?[a-z0-9][a-z0-9._-]*(?:@[0-9A-Za-
 /**
  * Whether one install spec is safe to hand to a plugin manager.
  * @param spec - the candidate spec.
- * @returns true for a plain npm package name (optionally `pkg@version`).
+ * @returns true for an npm package or a GitHub shorthand with an optional full commit hash.
+ * No arbitrary URLs, local paths, shell syntax or unpinned ref expressions.
  */
 export function isInstallSpecValid(spec: string): boolean {
-  return NPM_SPEC.test(spec)
+  return NPM_SPEC.test(spec) || /^github:[A-Za-z0-9][A-Za-z0-9-]*\/[A-Za-z0-9][A-Za-z0-9._-]*(?:#[a-f0-9]{40})?$/.test(spec)
 }
 
 /**

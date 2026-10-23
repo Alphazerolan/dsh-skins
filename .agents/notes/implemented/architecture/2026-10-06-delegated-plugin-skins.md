@@ -140,3 +140,27 @@ before scrolling past forty asset skins.
 - A delegated skin is only as independent as its plugin: an upgrade or
   removal of that plugin changes what the row does, and the row reports the
   live state rather than a stored guess.
+
+## Extension: explicit selection and independent install source (2026-10-24)
+
+With two delegated peers, absence of the asset stamp cannot distinguish stock,
+Claude Style, and DIY Journal. Add a center-owned `data-dsh-delegated-skin`
+selection, emitted at the atomic cut and first paint, cleared on stock,
+withholding and shutdown, and restored by existing preview/adopt logic.
+
+DIY opts into `selectionMode: 'explicit'`. It also receives its delegated ID as
+`data-dsh-skin`, making legacy peers yield without loading asset CSS for that ID.
+Its renderer permits its own claim but yields to any other claim and wallpaper.
+Legacy descriptors keep their old stamp behavior. This avoids changing another
+plugin's files or toggling plugin enablement. It cannot fix stock-mode handling
+inside an unmodified legacy peer; that remains the peer's responsibility.
+
+The installed package identity is separate from optional `installSpec`. DIY is
+installed from GitHub, while discovery and Manage still use its scoped package
+name. Validation admits only npm specs and GitHub owner/repository shorthand
+(optionally pinned by full commit hash), not arbitrary URLs or local paths.
+The registry is trusted code; installation still passes through the host manager.
+
+DIY's own live marker means runtime ready; actual painting has a separate marker.
+The center observes readiness/capability and never mutates either. No third-party
+artwork or executable payload is copied into this repository.

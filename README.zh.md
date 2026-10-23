@@ -121,6 +121,8 @@ dsh plugin --profile web add dsh-plugin-wallpaper-engine
 
 皮肤中心只读插件的标记、从不写入，插件也从不写 `data-dsh-skin`，两边都无法把对方卡死。
 
+DIY 手账本插件版提供照片与布局编辑、视频拼贴和可选翻书开场；纯皮肤 `diy-journal` 仍是独立条目。插件版使用明确选中信号，恢复默认或切换其他外观会停止绘制，设置入口和个人文件保留。安装来源为 GitHub，包身份与安装地址分别处理。接口见 [语义属性契约](contracts/semantic-attrs-v1.md)。
+
 ## 配置
 
 - **总开关**：开关整张卡片（试穿 / 应用 / 背景控制）；持久化在 v2 活跃状态文档中。

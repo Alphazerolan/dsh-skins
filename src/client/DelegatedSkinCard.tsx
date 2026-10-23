@@ -72,6 +72,7 @@ import css from './skin-center.module.css'
 /** The delegated payload a delegated row's manifest carries. */
 interface DelegatedPayload {
   package: string
+  installSpec?: string
   repository: string
   installCommand: string
   bodyAttr: string
@@ -135,7 +136,7 @@ export function DelegatedSkinCard(props: DelegatedSkinCardProps): ReactNode {
   const [notice, setNotice] = useState<'copied' | 'failed' | null>(null)
 
   const canInstall = faces.native !== null || faces.family !== null
-  const spec = payload.package
+  const spec = payload.installSpec ?? payload.package
   // The row is applicable when the plugin can own the page: it owns it now
   // (live and able to yield back), or it will the moment nothing else paints
   // (yielded to the skin this card has selected). A plugin that is installed
@@ -217,7 +218,7 @@ export function DelegatedSkinCard(props: DelegatedSkinCardProps): ReactNode {
           </>
         )}
         {payload.installed && faces.navigation !== null && (
-          <button type="button" className={css.button} onClick={() => { faces.navigation?.openBundle(spec) }}>
+          <button type="button" className={css.button} onClick={() => { faces.navigation?.openBundle(payload.package) }}>
             {t('delegatedSkinManage')}
           </button>
         )}

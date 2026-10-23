@@ -49,8 +49,12 @@ import {
 export interface DelegatedSkinDescriptor {
   /** Persisted selection value; also the card row id. Lowercase kebab-case. */
   id: string
-  /** npm package spec the one-click install hands to the plugin manager. */
+  /** Installed npm package identity, also the default install spec. */
   package: string
+  /** Optional manager install source; package remains the installed identity. */
+  installSpec?: string
+  /** Opt-in exact selection; also claims data-dsh-skin for legacy peer yield. */
+  selectionMode?: 'explicit'
   /** Upstream repository (docs, issues, changelog). */
   repository: string
   /** The command the card copies when no management face is published. */
@@ -110,9 +114,28 @@ export const CLAUDE_STYLE_SKIN: DelegatedSkinDescriptor = {
   accent: '#d97757',
 }
 
+/** DIY Journal owns its runtime; the bundled asset skin remains a separate entry. */
+export const DIY_JOURNAL_SKIN: DelegatedSkinDescriptor = {
+  id: 'diy-journal-plugin',
+  package: '@alphazerolan/dsh-plugin-diy-journal',
+  installSpec: 'github:Alphazerolan/diy-journal-settings#965d5bfce8fd6874bbb04a34763f7ae36293214b',
+  selectionMode: 'explicit',
+  repository: 'https://github.com/Alphazerolan/diy-journal-settings',
+  installCommand: 'dsh plugin --profile web add github:Alphazerolan/diy-journal-settings#965d5bfce8fd6874bbb04a34763f7ae36293214b',
+  bodyAttr: 'data-dsh-diy-journal',
+  handoffAttr: 'data-dsh-diy-journal-handoff',
+  wiringId: 'ui-diy-journal',
+  name: 'DIY 手账本 · 插件版',
+  nameEn: 'DIY Journal · Plugin Edition',
+  tagline: 'A customizable journal with a photo editor, video collages and a page-turning intro',
+  descriptionKey: 'delegatedSkinDescriptionDiyJournal',
+  accent: '#237fab',
+}
+
 /** Every delegated skin this package knows. Order is the card's row order. */
 export const DELEGATED_SKINS: readonly DelegatedSkinDescriptor[] = Object.freeze([
   CLAUDE_STYLE_SKIN,
+  DIY_JOURNAL_SKIN,
 ])
 
 /**

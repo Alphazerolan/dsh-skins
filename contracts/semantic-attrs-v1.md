@@ -65,12 +65,16 @@
 | `data-dsh-claude-style` | body（元素级，owner: `dsh-claude-style`） | 插件在页面上运行、其样式表已挂载期间置位（值是它的 build id），停用或卸载时移除。皮肤中心据此判断该行是否真的在作画 |
 | `data-dsh-claude-style-handoff` | body（元素级，owner: `dsh-claude-style`） | 该构建支持让路时置位，即它会在 `html[data-dsh-skin]` 或 `body[data-we-wallpaper]` 出现时收掉自己的视觉。**有无该属性是能力信号**：没有它的构建无法把页面交还给皮肤，卡片因此不向它提供试穿/应用 |
 
-让路方向只有一条，且只经由 `html[data-dsh-skin]`：委托皮肤被选中时该属性不
-置位（这正是它第一屏的文档形态，也是插件继续作画的前提）；用户改选其他皮肤
-或官方默认时该属性翻上，委托插件让路；壁纸渲染期间委托插件同样让路。
-皮肤中心不写委托插件的任何属性，委托插件不写 `data-dsh-skin`，双方都无法把
-对方卡死。委托皮肤的选择会照常持久化、开机采纳与试穿还原；让路暂停的是
-视觉，不是插件的设置页与偏好。
+### 明确选择的委托皮肤（owner: skin-center）
+
+`html[data-dsh-delegated-skin]` 表示当前展示的委托皮肤 ID，包含试穿状态；普通皮肤、默认外观、壁纸接管和运行时退出时移除，取消试穿时恢复原值。它由皮肤中心独占写入，插件只读。
+
+注册表可选择 `selectionMode: 'explicit'`。此时皮肤中心同时将 `data-dsh-skin` 设为委托 ID，使只认识旧标记的插件让路；这仅表示占用界面，皮肤中心不为此加载资源 CSS。显式插件只在选中标记匹配、普通标记为空或等于自己的委托 ID 且壁纸未占用时绘制。默认外观没有任何选中标记，因此不会误启用显式插件。
+
+旧式委托插件未声明 `selectionMode` 时保持原行为：选中时不设置 `data-dsh-skin`。旧插件仍需自行支持默认外观的退出语义；新增信号不会使未更新的第三方代码自动识别默认选择。
+
+DIY 手账本的 `body[data-dsh-diy-journal]` 表示运行时就绪，`data-dsh-diy-journal-handoff` 表示可交还外观；实际绘制使用独立的 `data-dsh-diy-journal-rendering`。切换仅释放视觉，保留设置页和用户文件。皮肤中心不写这些插件属性。
+
 ## part 组（78 行，含各 owner 行）
 
 shell 区域（owner: shell）：

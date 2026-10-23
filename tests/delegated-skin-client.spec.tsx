@@ -61,6 +61,7 @@ function controllerHarness(persist: (id: string | null) => Promise<void> = async
 
 beforeEach(() => {
   document.documentElement.removeAttribute('data-dsh-skin')
+  document.documentElement.removeAttribute('data-dsh-delegated-skin')
   document.body.removeAttribute(MARKERS.bodyAttr)
   document.body.removeAttribute(MARKERS.handoffAttr)
   document.head.innerHTML = ''
@@ -298,6 +299,23 @@ describe('the delegated skin row', () => {
     expect(installBundle).toHaveBeenCalledTimes(1)
     expect((installBundle.mock.calls[0] as unknown[])[0]).toBe('dsh-claude-style')
     expect(onInstalled).toHaveBeenCalled()
+  })
+
+  it('uses the GitHub source to install and package identity to manage', async () => {
+    const installBundle = vi.fn(async () => ({ ok: true, value: {} }))
+    const openBundle = vi.fn()
+    await publishNativeManager({ installBundle }, { openBundle })
+    const entry = skin(false)
+    const payload = entry.manifest.delegated! as NonNullable<typeof entry.manifest.delegated> & { installSpec: string }
+    payload.package = '@alphazerolan/dsh-plugin-diy-journal'
+    payload.installSpec = 'github:Alphazerolan/diy-journal-settings'
+    await render({ skin: entry })
+    await act(async () => { button(zh.delegatedSkinInstall)?.click() })
+    expect((installBundle.mock.calls[0] as unknown[])[0]).toBe(payload.installSpec)
+    payload.installed = true
+    await render({ skin: entry })
+    await act(async () => { button(zh.delegatedSkinManage)?.click() })
+    expect(openBundle).toHaveBeenCalledWith(payload.package)
   })
 
   it('hands the reader to the Plugins page once the plugin is installed', async () => {

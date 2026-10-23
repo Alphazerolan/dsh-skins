@@ -128,6 +128,8 @@ the selection.
 The skin center reads the plugin's markers and never writes them, and the plugin never writes
 `data-dsh-skin`. Neither side can strand the other.
 
+DIY Journal Plugin Edition adds photo/layout editing, video collages and an optional page-turning intro. The `diy-journal` asset skin remains a separate entry. Explicit selection controls rendering; stock or another selection releases visuals while retaining settings and user files. Installation uses GitHub, separately from package identity. See the [attribute contract](contracts/semantic-attrs-v1.md).
+
 ## Configuration
 
 - **Enable switch**: turns the whole card (try-on / apply / background controls) on or off; persisted in the v2 active-state document.

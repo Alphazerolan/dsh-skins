@@ -22,7 +22,7 @@ import { findSkin, loadSkinCatalog } from './skin-repo.ts'
 import type { SkinCatalog } from './skin-repo.ts'
 import { SKIN_CENTER_V2_PREFIX } from './routes-v2.ts'
 import { WALLPAPER_EXPECTED_ATTR } from './core/wallpaper-handoff.ts'
-import { isDelegatedSkinId } from './core/delegated-skins.ts'
+import { isDelegatedSkinId, findDelegatedSkin } from './core/delegated-skins.ts'
 
 export interface SkinIndexTapDeps {
   readActiveId: () => string | null
@@ -161,11 +161,15 @@ export function makeSkinIndexTap(deps: SkinIndexTapDeps): (html: string) => stri
     try {
       const active = deps.readActiveId()
       if (!active) return html
-      // A delegated skin is the stock look on the first screen, and the
-      // delegated plugin paints it from its own client chain. Stamping
-      // html[data-dsh-skin] here would be the opposite message: that plugin
-      // reads the stamp to stand down. Leaving it off is the whole handoff.
-      if (isDelegatedSkinId(active)) return html
+      // Delegates get an exact selection without center-owned CSS. Explicit
+      // delegates also claim the ordinary stamp so legacy peer plugins yield;
+      // legacy delegates retain their existing stamp-free startup.
+      const delegated = findDelegatedSkin(active)
+      if (delegated) {
+        if (wallpaperOnStage()) return stampWallpaperExpected(html)
+        const selected = stampHtmlAttribute(html, 'data-dsh-delegated-skin', active)
+        return delegated.selectionMode === 'explicit' ? stampSkinAttribute(selected, active) : selected
+      }
       // Same first-screen pre-judgment as the rows above (issue #51), on the
       // raw tap: it is the half that stamps the opening html tag, and a
       // document that reaches the browser already carrying a wallpaper must
