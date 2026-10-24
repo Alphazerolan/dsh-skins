@@ -45,14 +45,14 @@
 | 皮肤 | 作者 | 外观 |
 |---|---|---|
 | [深海女仆工坊](https://dsh-market.com/#skin:maid-atelier)（`maid-atelier`） | Small-tailqwq | 双女仆工坊背景、深海蓝蕾丝界面与 Q 版侧栏 |
+| [鲸鱼娘 · 未至之境](https://dsh-market.com/#skin:whale-fantasy)（`whale-fantasy`） | stushansusu | 赛博数据雨少女特写背景 · 冷黑蓝全息 HUD · 电光蓝与青色高光 |
 | [鲸吟](https://dsh-market.com/#skin:whale-song)（`whale-song`） | dsh-web | 深海鲸语女神背景 · 冰蓝海洋调色板 · 金色细线点缀 |
-| [蓝色幻想](https://dsh-market.com/#skin:blue-fantasy)（`blue-fantasy`） | powerdog996（DreamSkin 社区）· dsh-web 适配 | 鲸鱼插画背景 · periwinkle 靛蓝调色板 · 半透明面板 |
 
-| 深海女仆工坊 | 鲸吟 | 蓝色幻想 |
+| 深海女仆工坊 | 鲸鱼娘 · 未至之境 | 鲸吟 |
 |---|---|---|
-| ![深海女仆工坊](skins/maid-atelier/preview/light.jpg) | ![鲸吟](skins/whale-song/preview/light.jpg) | ![蓝色幻想](skins/blue-fantasy/preview/light.jpg) |
+| ![深海女仆工坊](skins/maid-atelier/preview/light.jpg) | ![鲸鱼娘 · 未至之境](skins/whale-fantasy/preview/light.jpg) | ![鲸吟](skins/whale-song/preview/light.jpg) |
 
-三款都可从创意工坊一键安装；其中 `blue-fantasy` 同时也是本包内置的默认皮肤。
+三款都可从创意工坊一键安装。
 
 ## 安装
 
@@ -120,6 +120,7 @@ dsh plugin --profile web add dsh-plugin-wallpaper-engine
   设置页照常可用。
 
 皮肤中心只读插件的标记、从不写入，插件也从不写 `data-dsh-skin`，两边都无法把对方卡死。
+
 ## 配置
 
 - **总开关**：开关整张卡片（试穿 / 应用 / 背景控制）；持久化在 v2 活跃状态文档中。
