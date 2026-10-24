@@ -71,7 +71,7 @@
 皮肤中心不写委托插件的任何属性，委托插件不写 `data-dsh-skin`，双方都无法把
 对方卡死。委托皮肤的选择会照常持久化、开机采纳与试穿还原；让路暂停的是
 视觉，不是插件的设置页与偏好。
-## part 组（78 行，含各 owner 行）
+## part 组（80 行，含各 owner 行）
 
 shell 区域（owner: shell）：
 
@@ -127,6 +127,8 @@ family / 插件区域：
 | `tab-bar` / `tab` | skill-explorer | 技能中心页签条/页签（中间列面板，同 ssh）；`[data-dsh-plugin="skill-explorer"] [data-dsh-part="tab-bar"]` / `[data-dsh-plugin="skill-explorer"] [data-dsh-part="tab"]` |
 | `skill-row` | skill-explorer | 技能卡行；`[data-dsh-plugin="skill-explorer"] [data-dsh-part="skill-row"]` |
 | `filter-bar` | skill-explorer | 技能列表筛选条（搜索框 + 工作区选择 + 刷新）；`[data-dsh-plugin="skill-explorer"] [data-dsh-part="filter-bar"]` |
+| `entry` | message-edit | 回合末尾的「编辑并重发」触发按钮；`[data-dsh-plugin="message-edit"] [data-dsh-part="entry"]` |
+| `editor` | message-edit | 回合末尾的内联编辑器根，包含文本框、分支副作用提示与提交操作；`[data-dsh-plugin="message-edit"] [data-dsh-part="editor"]` |
 | `entry` | session-id | 侧栏 footer 触发器；`button[data-dsh-part="entry"]`（`[data-dsh-plugin="session-id"]` 容器内） |
 | `panel` | session-id | 会话 ID 模态面板；`[role="dialog"]` 根（`[data-dsh-part="panel"]`） |
 | `row` | session-id | 会话列表行；面板内行容器（`[data-dsh-part="row"]`） |
@@ -175,7 +177,7 @@ shell 的 `[class*="panelGlyph"]` 内）。shell 目前不把 entry id 透传到
 不进 `data-dsh-plugin`：plugin 属性标记插件面板根，皮肤里已有
 `[data-dsh-plugin="ssh"] [class*="panel"]` 一类把根当作面板子树起点的规则，把字形也算进去会误伤。
 
-## plugin 组（14 个）
+## plugin 组（15 个）
 
 | data-dsh-plugin | owner | 锚定方式 |
 | --- | --- | --- |
@@ -190,6 +192,7 @@ shell 的 `[class*="panelGlyph"]` 内）。shell 目前不把 entry id 透传到
 | `dsh-web-ui-market` | dsh-market | 创意工坊商店一级页（settings.section id `dsh-web-ui-market`），商店卡与目录条目容器 |
 | `skin-center` | skins/skin-center | 一级设置分区 settings.section id `skin-center`（列已安装皮肤，属内置源时显式标记） |
 | `session-id` | dsh-session-id | footer action slot entry id `session-id`；`[data-dsh-plugin="session-id"]`（面板 overlay 根 + 入口触发器） |
+| `message-edit` | dsh-message-edit | `conversation.chat.turnTail` slot entry id `message-edit`；`[data-dsh-plugin="message-edit"]`（触发按钮 + 内联编辑器根） |
 | `usage` | dsh-usage | 一级设置分区 settings.section id `dsh-usage`（创意工坊下方）；`[data-dsh-plugin="usage"]`；侧栏底部速览卡容器 `[data-dsh-usage-foot-card]` |
 | `preset-center` | dsh-preset-center | 创意工坊卡片的「预设」标签页面板（`dsh-workshop.panel` keyed 槽 key `preset`）；`[data-dsh-plugin="preset-center"]` |
 | `liangshen` | dsh-liangshen | 首页输入框内的梁神模式拨杆；`[data-dsh-plugin="liangshen"][data-dsh-part="lever"]`，slot entry id `liangshen-lever` |
