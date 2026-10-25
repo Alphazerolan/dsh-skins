@@ -71,7 +71,7 @@
 皮肤中心不写委托插件的任何属性，委托插件不写 `data-dsh-skin`，双方都无法把
 对方卡死。委托皮肤的选择会照常持久化、开机采纳与试穿还原；让路暂停的是
 视觉，不是插件的设置页与偏好。
-## part 组（80 行，含各 owner 行）
+## part 组（90 行，含各 owner 行）
 
 shell 区域（owner: shell）：
 
@@ -161,6 +161,17 @@ family / 插件区域：
 | `lever-arm` | liangshen | 拨杆臂（拉杆 + 球头，随状态转动）；lever 内 `[data-dsh-part="lever-arm"]` |
 | `lever-burst` | liangshen | 拨下命中后的中奖特效浮层（闪光 / 冲击环 / 火花 / 横幅）；`[data-dsh-part="lever-burst"]`，`prefers-reduced-motion` 下退化为淡出 |
 | `lever-banner` | liangshen | 特效中的梁神横幅（模式名 + 文言文/二进制/摩斯三行）；burst 内 `[data-dsh-part="lever-banner"]` |
+| `panel` | browser-view | 右侧栏标签页主体根（工具栏 + 帧 + 动作行）；`[data-dsh-plugin="browser-view"][data-dsh-part="panel"]` |
+| `toggle` | browser-view | 会话头「浏览器」快捷按钮（打开或聚焦该标签页）；`[data-dsh-part="toggle"]` |
+| `toolbar` | browser-view | 顶部工具条（地址显示 + 连接状态 + 刷新），38px 高与官方浏览器标签页同构；panel 内 `[data-dsh-part="toolbar"]` |
+| `address` | browser-view | 被控页面地址的只读显示（截断、可复制）；toolbar 内 `[data-dsh-part="address"]` |
+| `status` | browser-view | 连接状态标记（连接中 / 加载中 / 实时），文案随状态变化；toolbar 内 `[data-dsh-part="status"]` |
+| `tabs` | browser-view | 被控浏览器的标签页 chips（仅在多于一张时绘制）；panel 内 `[data-dsh-part="tabs"]` |
+| `frame` | browser-view | 实时帧图像（`<img>`，`object-fit: contain`）；panel 内 `[data-dsh-part="frame"]` |
+| `trace` | browser-view | 底部动作行（最近一次工具动作的可读摘要）；panel 内 `[data-dsh-part="trace"]` |
+| `empty` | browser-view | 尚未收到画面时的空态占位；panel 内 `[data-dsh-part="empty"]` |
+| `error` | browser-view | 宿主上报错误时的错误态占位；panel 内 `[data-dsh-part="error"]` |
+| `tab-title` | browser-view | 右栏 chip 内本插件自有部分（图标 + 标题），chip 行盒归 shell；`[data-dsh-plugin="browser-view"] [data-dsh-part="tab-title"]` |
 
 ### 面板行身份锚点 `data-dsh-panel-entry`（owner: 各注册面板的插件）
 
@@ -177,7 +188,7 @@ shell 的 `[class*="panelGlyph"]` 内）。shell 目前不把 entry id 透传到
 不进 `data-dsh-plugin`：plugin 属性标记插件面板根，皮肤里已有
 `[data-dsh-plugin="ssh"] [class*="panel"]` 一类把根当作面板子树起点的规则，把字形也算进去会误伤。
 
-## plugin 组（15 个）
+## plugin 组（16 个）
 
 | data-dsh-plugin | owner | 锚定方式 |
 | --- | --- | --- |
@@ -196,6 +207,7 @@ shell 的 `[class*="panelGlyph"]` 内）。shell 目前不把 entry id 透传到
 | `usage` | dsh-usage | 一级设置分区 settings.section id `dsh-usage`（创意工坊下方）；`[data-dsh-plugin="usage"]`；侧栏底部速览卡容器 `[data-dsh-usage-foot-card]` |
 | `preset-center` | dsh-preset-center | 创意工坊卡片的「预设」标签页面板（`dsh-workshop.panel` keyed 槽 key `preset`）；`[data-dsh-plugin="preset-center"]` |
 | `liangshen` | dsh-liangshen | 首页输入框内的梁神模式拨杆；`[data-dsh-plugin="liangshen"][data-dsh-part="lever"]`，slot entry id `liangshen-lever` |
+| `browser-view` | dsh-browser-view | 右栏标签页类型 id `@linxin666/dsh-client-ui-browser-view`（`sidebar.right.pane.tab` 与 `.title` 的 key）；`[data-dsh-plugin="browser-view"]`（面板根 + 会话头触发器）；chip 内自有部分 `[data-dsh-part="tab-title"]` |
 
 ## 已知脆弱点（上游主题缝 PR 诉求）
 
